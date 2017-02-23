@@ -1,0 +1,41 @@
+{
+  "name": "simple_qcm",
+  "version": "1.0.0",
+  "description": "QCM en NodeJS",
+  "main": "src/app.js",
+  "scripts": {
+    "eslint": "eslint ./*.js",
+    "build:resources": "gulp build:resources",
+    "babelify": "gulp build:babelify",
+    "build:css": "gulp build:css",
+    "build:views": "gulp build:views",
+    "clean": "gulp clean",
+    "build": "gulp clean && gulp build:resources && gulp build:babelify && gulp build:css && gulp build:views",
+    "start": "node src/app.js"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "qcm",
+    "nodejs",
+    "socket.io"
+  ],
+  "author": "Thibaut Moiroud",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.1",
+    "pug": "^2.0.0-beta11",
+    "socket.io": "^1.7.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.16.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.2",
+    "eslint-plugin-standard": "^2.0.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean": "^0.3.2",
+    "gulp-css": "^0.1.0",
+    "gulp-pug": "^3.2.0"
+  }
+}
