@@ -10,8 +10,7 @@
     "build:css": "gulp build:css",
     "build:views": "gulp build:views",
     "clean": "gulp clean",
-    "build": "gulp clean && gulp build:resources && gulp build:babelify && gulp build:css && gulp build:views",
-    "start": "node src/app.js"
+    "build": "gulp clean && gulp build:resources && gulp build:babelify && gulp build:css && gulp build:views"
   },
   "keywords": [
     "js",

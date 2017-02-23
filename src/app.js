@@ -1,14 +1,12 @@
 // Import de modules
 import * as parser from 'body-parser'
 import * as express from 'express'
-import * as http from 'http'
 import { join } from 'path'
-import * as io from 'socket.io'
 
 // Coeur de l'application
 let app = express()
-let server = http.createServer(app)
-let io = io.listen(server)
+let server = require('http').createServer(app)
+let io = require('socket.io').listen(server)
 
 // Configuration de l'application
 app.set('view engine', 'pug')
