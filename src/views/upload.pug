@@ -1,10 +1,10 @@
 extends layout.pug
 
 block main
-  form(enctype="multipart/form-data")
+  form(enctype="multipart/form-data" method="post")
     label(for="file") Questionnaire JSON :
-    input#file(type="text" name="file")
+    input#file(type="file" name="file")
     input(type="submit" value="Upload")
 
 block custom_js
-  
+  script(src="static/js/upload.js")

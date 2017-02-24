@@ -1,8 +1,9 @@
 extends layout.pug
 
 block main
-  h2 Question x
-  form#question-submit
+  h2= user
+  h3 Question x
+  form#question-submit(method="post")
     label(for="choices") Choix
     select#choices(name="choices")
       option(value="") ...
@@ -10,9 +11,8 @@ block main
       option(value="2") choix 2
       option(value="x") choix x
     p OU
-    label(for="response") Réponse :
+    label(for="response") Réponse : 
     input#response(type="text" name="response")
     input(type="submit" value="Suivant")
 
 block custom_js
-  

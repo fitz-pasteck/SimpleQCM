@@ -1,0 +1,21 @@
+{
+  "name": "Jean Duval",
+  "date": "20170217",
+  "score": "75",
+  "responses": [
+    {
+      "question": "…",
+      "success": true,
+      "responses": [
+      "…"
+      ]
+    },
+    {
+      "question": "…",
+      "success": false,
+      "responses": [
+      "…"
+      ]
+    }
+  ]
+}

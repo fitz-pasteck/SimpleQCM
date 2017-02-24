@@ -1,18 +1,24 @@
 // Import de modules
-import * as parser from 'body-parser'
-import * as express from 'express'
-import { join } from 'path'
+const parser = require('body-parser')
+const express = require('express')
+const http = require('http')
+const path = require('path')
+const socketIO = require('socket.io')
 
 // Coeur de l'application
 let app = express()
-let server = require('http').createServer(app)
-let io = require('socket.io').listen(server)
+let server = http.createServer(app)
+let io = socketIO.listen(server)
 
 // Configuration de l'application
-app.set('view engine', 'pug')
 app.use(parser.urlencoded())
 app.use(parser.json())
-app.use('/static', express.static(join(__dirname, '/static')))
+app.use('/static', express.static(path.join(__dirname, '/static')))
+app.set('views', path.join(__dirname, '/views'))
+app.set('view engine', 'pug')
+
+// Variables de serveur
+server.users = []
 
 // Routes
 app.route('/')
@@ -27,6 +33,8 @@ app.route('/play')
   res.render('play', {title: 'Questionnaire'})
 })
 .post((req, res) => {
+  let user = req.body.name
+  res.redirect('/play')
 })
 
 app.route('/upload')
@@ -36,8 +44,13 @@ app.route('/upload')
 .post((req, res) => {
 })
 
-app.listen(3000)
+server.listen(3000)
 
 // Utilisation du socket
 io.sockets.on('connection', (socket) => {
+  socket.on('add_user', user => {
+    if (!server.users.includes(user)) server.users.push(user)
+    console.log(server.users)
+    console.log(`L'étudiant ${user} s'est connecté.`)
+  })
 })

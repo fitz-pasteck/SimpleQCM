@@ -29,12 +29,12 @@ gulp.task('build:babelify', _ => {
 })
 
 gulp.task('build:resources', () => {
-  gulp.src('./src/static/media/**/*', { base: './src' })
+  gulp.src(['./src/static/media/**/*', './src/questionnaires/**/*.json'], { base: './src' })
     .pipe(gulp.dest('./dist'))
 })
 
 gulp.task('build:watch', _ => {
-  gulp.watch('./src/**/*', ['clean', 'css', 'views', 'babelify', 'resources'])
+  gulp.watch('./src/**/*', ['clean', 'build:css', 'build:views', 'build:babelify', 'build:resources'])
 })
 
 gulp.task('default', ['clean', 'build:css', 'build:views', 'build:babelify', 'build:resources'])
