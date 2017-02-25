@@ -32,13 +32,8 @@ let upload = multer({dest: path.join(__dirname, 'tmp_uploads')})
 server.users = []
 
 // Route spécifique vers le questionnaire
-app.get('/questionnaire/:qcm', (req, res) => {
-  let qcm = path.join(__dirname, 'questionnaires', req.params.qcm, `${req.params.qcm}.json`)
-  if (fs.existsSync(qcm)) {
-    let jsonFile = JSON.parse(fs.readFileSync(qcm))
-    console.log(jsonFile)
-    res.json(jsonFile)
-  }
+app.get('/questionnaire/:qcm', (res, req) => {
+
 })
 
 // Routes
@@ -90,6 +85,11 @@ app.post('/upload', upload.single('questionnaire'), (req, res) => {
       })
       // On supprime le fichier temporaire
       fs.unlinkSync(req.file.path)
+      // On récupère le JSON du QCM
+      if (fs.existsSync(newPath)) {
+        let jsonFile = JSON.parse(fs.readFileSync(newPath))
+        res.json(jsonFile)
+      }
     }
   }
 })
