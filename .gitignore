@@ -1,4 +1,8 @@
 dist
 node_modules
 
+src/tmp_uploads
+
+src/questionnaires/*
+
 .eslintrc.json
