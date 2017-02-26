@@ -56,18 +56,18 @@ app.post('/upload', upload.single('questionnaire'), (req, res) => {
 
     if (extension === 'json') {
       let newPath = path.join(__dirname, 'questionnaire', req.file.originalname)
-      console.log(newPath)
-      fs.readFile(req.file.path, data => {
+      fs.readFile(req.file.path, (err, data) => {
+        if (err) throw err
         // Si le fichier a déjà été créé avant on le supprime
         if (fs.existsSync(newPath)) {
-          fs.unlink(newPath)
+          fs.unlinkSync(newPath)
         }
         // On écrit le nouveau QCM
         fs.writeFileSync(newPath, data)
-      })
-      // On supprime le fichier temporaire
-      fs.unlinkSync(req.file.path)
+      }, 'utf-8')
     }
+    // On supprime le fichier temporaire
+    fs.unlinkSync(req.file.path)
   }
 })
 
