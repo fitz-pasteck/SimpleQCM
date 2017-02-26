@@ -44,7 +44,7 @@ app.route('/play')
   let pathFile = path.join(__dirname, 'questionnaire', 'qcm.json')
   let monQcm = JSON.parse(fs.readFileSync(pathFile, 'UTF-8'))
   let rand = utils.randomInt(0, monQcm.length)
-  res.render('play', {title: 'Questionnaire', qcm: monQcm})
+  res.render('play', {title: 'Questionnaire', question: monQcm[rand]})
 })
 .post((req, res) => {
   res.redirect('/play')
@@ -72,7 +72,12 @@ server.listen(3000)
 io.sockets.on('connection', socket => {
   socket.on('add_user', user => {
     if (!server.users.includes(user)) server.users.push(user)
+    socket.user = user
     console.log(server.users)
     console.log(`L'étudiant ${user} s'est connecté.`)
+  })
+
+  socket.on('submit_question', question => {
+    console.log(question)
   })
 })
