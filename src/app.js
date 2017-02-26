@@ -7,6 +7,8 @@ const multer = require('multer')
 const path = require('path')
 const socketIO = require('socket.io')
 
+const utils = require('./static/js/utils')
+
 // Coeur de l'application
 let app = express()
 let server = http.createServer(app)
@@ -34,14 +36,17 @@ app.route('/')
   res.render('index', {title: 'Accueil'})
 })
 .post((req, res) => {
+  res.redirect('/play')
 })
 
 app.route('/play')
 .get((req, res) => {
-  res.render('play', {title: 'Questionnaire'})
+  let pathFile = path.join(__dirname, 'questionnaire', 'qcm.json')
+  let monQcm = JSON.parse(fs.readFileSync(pathFile, 'UTF-8'))
+  let rand = utils.randomInt(0, monQcm.length)
+  res.render('play', {title: 'Questionnaire', qcm: monQcm})
 })
 .post((req, res) => {
-  let user = req.body.name
   res.redirect('/play')
 })
 
@@ -49,25 +54,15 @@ app.get('/upload', (req, res) => {
   res.render('upload', {title: 'Dépot de questionnaire'})
 })
 app.post('/upload', upload.single('questionnaire'), (req, res) => {
-  // Magic byte: magic.detectFile(pathToFile)
   if (req.file) {
     let arrayFile = req.file.originalname.split('.')
     let extension = arrayFile[arrayFile.length - 1].toLowerCase()
-
     if (extension === 'json') {
-      let newPath = path.join(__dirname, 'questionnaire', req.file.originalname)
-      fs.readFile(req.file.path, (err, data) => {
-        if (err) throw err
-        // Si le fichier a déjà été créé avant on le supprime
-        if (fs.existsSync(newPath)) {
-          fs.unlinkSync(newPath)
-        }
-        // On écrit le nouveau QCM
-        fs.writeFileSync(newPath, data)
-      }, 'utf-8')
+      let newPath = path.join(__dirname, 'questionnaire', 'qcm.json')
+      let tmpQcm = fs.readFileSync(req.file.path, 'UTF-8')
+      fs.unlinkSync(req.file.path)
+      fs.writeFileSync(newPath, tmpQcm)
     }
-    // On supprime le fichier temporaire
-    fs.unlinkSync(req.file.path)
   }
 })
 

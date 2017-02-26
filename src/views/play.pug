@@ -2,17 +2,24 @@ extends layout.pug
 
 block main
   h2= user
-  h3 Question x
-  form#question-submit(method="post")
-    label(for="choices") Choix
-    select#choices(name="choices")
-      option(value="") ...
-      option(value="1") choix 1
-      option(value="2") choix 2
-      option(value="x") choix x
-    p OU
-    label(for="response") Réponse : 
-    input#response(type="text" name="response")
-    input(type="submit" value="Suivant")
+  each question in qcm
+    - let indexQuestion = qcm.indexOf(question)
+    form(id="question-" + indexQuestion method="POST" action="/play")
+      article(class="question-" + indexQuestion)
+        h3= question.question
+        div.timer(data-time=question.time)= question.time
+        case question.type
+          when 'choice'
+            fieldset
+              legend Choisir une réponse:
+              each choice in question.choices
+                - let idChoice = `choice-${question.choices.indexOf(choice)}`
+                label(for=idChoice)= choice
+                input.radio-response(id=idChoice type="radio" name="response-radio-" + indexQuestion)
+          when 'free'
+            label(for="response-text-" + indexQuestion) Réponse :
+            input.text-response(id="response-text-" + indexQuestion type="text" name="response")
+      input(type="submit" value="Suivant")
 
 block custom_js
+  script(src="/static/js/play.js")

@@ -1,7 +1,7 @@
 extends layout.pug
 
 block main
-  form(action="/play" method="post")
+  form(action="/" method="post")
     label(for="name") Nom Prénom:
     input#name(type="text" name="name" required)
     input(type="submit" value="Commencer")
