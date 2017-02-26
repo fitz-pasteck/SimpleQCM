@@ -33,6 +33,10 @@ server.users = []
 // Routes
 app.route('/')
 .get((req, res) => {
+  let pathFile = path.join(__dirname, 'questionnaire', 'qcm.json')
+  if (!fs.existsSync(pathFile)) {
+    res.render('index', {title: 'Accueil', error: 'no-file'})
+  }
   res.render('index', {title: 'Accueil'})
 })
 .post((req, res) => {
@@ -42,16 +46,25 @@ app.route('/')
 app.route('/play')
 .get((req, res) => {
   let pathFile = path.join(__dirname, 'questionnaire', 'qcm.json')
-  let monQcm = JSON.parse(fs.readFileSync(pathFile, 'UTF-8'))
-  let rand = utils.randomInt(0, monQcm.length)
-  res.render('play', {title: 'Questionnaire', question: monQcm[rand]})
+  if (fs.existsSync(pathFile)) {
+    let qcm = JSON.parse(fs.readFileSync(pathFile, 'UTF-8'))
+    let rand = utils.randomInt(0, qcm.length)
+    res.render('play', {title: 'Questionnaire', question: qcm[rand], questionId: rand})
+  } else {
+    res.redirect('/')
+  }
 })
 .post((req, res) => {
   res.redirect('/play')
 })
 
 app.get('/upload', (req, res) => {
-  res.render('upload', {title: 'Dépot de questionnaire'})
+  let qcm = []
+  let pathFile = path.join(__dirname, 'questionnaire', 'qcm.json')
+  if (fs.existsSync(pathFile)) {
+    qcm = JSON.parse(fs.readFileSync(pathFile, 'UTF-8'))
+  }
+  res.render('upload', {title: 'Dépot de questionnaire', qcm: qcm})
 })
 app.post('/upload', upload.single('questionnaire'), (req, res) => {
   if (req.file) {
@@ -72,12 +85,10 @@ server.listen(3000)
 io.sockets.on('connection', socket => {
   socket.on('add_user', user => {
     if (!server.users.includes(user)) server.users.push(user)
-    socket.user = user
     console.log(server.users)
     console.log(`L'étudiant ${user} s'est connecté.`)
   })
 
   socket.on('submit_question', question => {
-    console.log(question)
   })
 })

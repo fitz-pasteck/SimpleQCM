@@ -1,9 +1,9 @@
 extends layout.pug
 
 block main
-  h2= user
-  form(method="POST" action="/play")
-    article(class="question")
+  article.question
+    form(method="POST" action="/play")
+      input(type="hidden" name="question" value=questionId)
       h3.question= question.question
       div.timer(data-time=question.time)= question.time
       case question.type
@@ -17,7 +17,7 @@ block main
         when 'free'
           label(for="response-text") Réponse :
           input.text-response(id="response-text" type="text" name="response")
-    input(type="submit" value="Suivant")
+      input(type="submit" value="Suivant")
 
 block custom_js
   script(src="/static/js/play.js")

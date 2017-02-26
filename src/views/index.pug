@@ -5,6 +5,8 @@ block main
     label(for="name") Nom Prénom:
     input#name(type="text" name="name" required)
     input(type="submit" value="Commencer")
+  if error
+    p Il n'y a aucun questionnaire disponible
 
 block custom_js
   script(src="static/js/index.js")
