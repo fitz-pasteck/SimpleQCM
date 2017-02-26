@@ -19,9 +19,6 @@ app.use(parser.json())
 // Route static
 app.use('/static', express.static(path.join(__dirname, 'static')))
 
-// Route vers les questionnaires
-app.use('/qcm', express.static(path.join(__dirname, 'questionnaires')))
-
 // Définition du moteur de yemplate
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
@@ -30,16 +27,6 @@ let upload = multer({dest: path.join(__dirname, 'tmp_uploads')})
 
 // Variables de serveur
 server.users = []
-
-// Route spécifique vers le questionnaire
-app.get('/questionnaire/:qcm', (req, res) => {
-  let qcm = path.join(__dirname, 'questionnaires', req.params.qcm, `${req.params.qcm}.json`)
-  if (fs.existsSync(qcm)) {
-    let jsonFile = JSON.parse(fs.readFileSync(qcm))
-    console.log(jsonFile)
-    res.json(jsonFile)
-  }
-})
 
 // Routes
 app.route('/')
@@ -64,23 +51,13 @@ app.get('/upload', (req, res) => {
 app.post('/upload', upload.single('questionnaire'), (req, res) => {
   // Magic byte: magic.detectFile(pathToFile)
   if (req.file) {
-    /**
-    * On récupère le nom du fichier et l'extension
-    * Le nom du fichier sert a créer un répertoire du même nom
-    */
-    let qcmFileArray = req.file.originalname.split('.')
-    let qcmFolder = qcmFileArray[0].toLowerCase()
-    let extension = qcmFileArray[1].toLowerCase()
+    let arrayFile = req.file.originalname.split('.')
+    let extension = arrayFile[arrayFile.length - 1].toLowerCase()
 
     if (extension === 'json') {
-      let qcmPath = path.join(__dirname, 'questionnaires', qcmFolder)
-      // Teste si le dossier du questionnaire uploader est déjà créé ou non
-      if (!fs.existsSync(qcmPath)) {
-        fs.mkdir(qcmPath)
-      }
-
-      let newPath = path.join(qcmPath, req.file.originalname)
-      fs.readFile(req.file.path, (err, data) => {
+      let newPath = path.join(__dirname, 'questionnaire', req.file.originalname)
+      console.log(newPath)
+      fs.readFile(req.file.path, data => {
         // Si le fichier a déjà été créé avant on le supprime
         if (fs.existsSync(newPath)) {
           fs.unlink(newPath)
@@ -97,7 +74,7 @@ app.post('/upload', upload.single('questionnaire'), (req, res) => {
 server.listen(3000)
 
 // Utilisation du socket
-io.sockets.on('connection', (socket) => {
+io.sockets.on('connection', socket => {
   socket.on('add_user', user => {
     if (!server.users.includes(user)) server.users.push(user)
     console.log(server.users)

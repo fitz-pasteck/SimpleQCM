@@ -4,6 +4,16 @@ let renderQcm = document.querySelector('#qcm')
 
 let qcmData = []
 
+let readQcm = _ => {
+  if (fileInput.files.length) {
+    let reader = new FileReader()
+    reader.onload = (e) => {
+      renderQcm.innerHTML = e.target.result
+    }
+    reader.readAsBinaryString(fileInput.files[0])
+  }
+}
+
 let sendData = (url, data) => {
   var formData = new FormData()
 
@@ -17,30 +27,8 @@ let sendData = (url, data) => {
   })
 }
 
-let displayQuestionnaire = fileName => {
-  let fileFolder = fileName.split('.')[0]
-
-  let headers = new Headers()
-  headers.append('Content-Type', 'application/json')
-
-  fetch(`/questionnaire/${fileFolder}`, {
-    method: 'GET',
-    headers: headers
-  })
-  .then(res => res.json())
-  .then(res => {
-    qcmData = res
-  })
-
-  if (qcmData[0]) {
-    for (let question of qcmData) {
-      let test = question
-    }
-  }
-}
-
 form.addEventListener('submit', e => {
   e.preventDefault()
   sendData('/upload', {'questionnaire': fileInput.files[0]})
-  displayQuestionnaire(fileInput.files[0].name)
+  readQcm()
 })
